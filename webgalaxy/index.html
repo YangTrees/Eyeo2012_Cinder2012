@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银河系星图 - Milky Way Star Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Arial', sans-serif;
+        }
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+        #info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #info-panel h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #88ccff;
+        }
+        #info-panel .star-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        #info-panel .star-info {
+            font-size: 12px;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #controls h4 {
+            margin-bottom: 8px;
+            color: #88ccff;
+        }
+        #controls p {
+            margin: 4px 0;
+            color: #ccc;
+        }
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+        }
+        #loading .progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        #loading .progress-bar {
+            height: 100%;
+            background: #88ccff;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        #star-count {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div>正在加载恒星数据...</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div id="loading-status" style="margin-top: 10px; font-size: 14px; color: #aaa;"></div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="star-count">
+        恒星数量: <span id="star-count-num">0</span>
+    </div>
+
+    <div id="info-panel" style="display: none;">
+        <h3>选中恒星</h3>
+        <div class="star-name" id="selected-star-name">-</div>
+        <div class="star-info">
+            <div>光谱类型: <span id="selected-star-spectrum">-</span></div>
+            <div>视星等: <span id="selected-star-appmag">-</span></div>
+            <div>绝对星等: <span id="selected-star-absmag">-</span></div>
+            <div>距离: <span id="selected-star-dist">-</span> 光年</div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <h4>操作说明</h4>
+        <p>左键点击恒星 - 选中恒星</p>
+        <p>滚轮 - 缩放</p>
+        <p>拖拽 - 旋转视角</p>
+        <p>N - 显示/隐藏名称</p>
+        <p>B - 显示/隐藏亮星</p>
+        <p>F - 显示/隐藏暗星</p>
+        <p>空格 - 开关效果模式</p>
+
+        <h4 style="margin-top: 12px;">光晕调节</h4>
+        <div style="margin: 6px 0;">
+            <label style="display: block; font-size: 11px; color: #aaa; margin-bottom: 4px;">
+                最小光晕: <span id="glow-min-val">1.0</span>
+            </label>
+            <input type="range" id="glow-min" min="0.1" max="20" step="0.1" value="1.0" style="width: 100%;">
+        </div>
+        <div style="margin: 6px 0;">
+            <label style="display: block; font-size: 11px; color: #aaa; margin-bottom: 4px;">
+                最大光晕: <span id="glow-max-val">100.0</span>
+            </label>
+            <input type="range" id="glow-max" min="20" max="500" step="1" value="100.0" style="width: 100%;">
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
